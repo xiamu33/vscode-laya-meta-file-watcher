@@ -1,0 +1,57 @@
+{
+  "name": "laya-meta-files-watcher",
+  "displayName": "LayaAir Meta Files Watcher",
+  "description": "LayaAir meta files watcher.",
+  "version": "0.0.1",
+  "publisher": "xiamu33",
+  "repository": "https://github.com/xiamu33/vscode-laya-meta-file-watcher.git",
+  "engines": {
+    "vscode": "^1.81.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "laya-meta-files-watcher.helloWorld",
+        "title": "Hello World"
+      }
+    ]
+  },
+  "scripts": {
+    "prepare": "husky install",
+    "vscode:prepublish": "pnpm compile",
+    "compile": "tsc",
+    "watch": "tsc -watch",
+    "pretest": "pnpm compile && pnpm lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --fix"
+    ]
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "20.2.5",
+    "@types/vscode": "^1.81.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "@vscode/test-electron": "^2.3.2",
+    "eslint": "^8.47.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "glob": "^8.1.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.0",
+    "mocha": "^10.2.0",
+    "prettier": "^3.0.2",
+    "typescript": "^5.1.3"
+  }
+}
