@@ -13,14 +13,6 @@
   ],
   "activationEvents": [],
   "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "laya-meta-files-watcher.helloWorld",
-        "title": "Hello World"
-      }
-    ]
-  },
   "scripts": {
     "prepare": "husky install",
     "vscode:prepublish": "pnpm compile",
@@ -28,7 +20,8 @@
     "watch": "tsc -watch",
     "pretest": "pnpm compile && pnpm lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "vs-publish": "vsce publish --no-dependencies"
   },
   "lint-staged": {
     "*.{js,ts}": [
