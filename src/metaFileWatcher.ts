@@ -6,7 +6,7 @@ let watcher: vscode.FileSystemWatcher;
 let justCreated: vscode.Uri | null;
 
 export async function activate(folder: vscode.WorkspaceFolder) {
-  watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(folder, '**/*.{ts,js}'));
+  watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(folder, '**/*'));
 
   watcher.onDidCreate((uri) => {
     if (uri.fsPath.endsWith('.meta')) return;
