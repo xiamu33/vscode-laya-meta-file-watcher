@@ -12,8 +12,16 @@
     "Other"
   ],
   "activationEvents": [
-    "onLanguage:typescript"
+    "*"
   ],
+  "contributes": {
+    "commands": [
+      {
+        "title": "LayaAir Meta Files Watcher: cleanup meta files",
+        "command": "CleanUpUselessMetaFiles"
+      }
+    ]
+  },
   "main": "./out/extension.js",
   "scripts": {
     "prepare": "husky install",

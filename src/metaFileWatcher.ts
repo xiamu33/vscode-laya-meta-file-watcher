@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 let watcher: vscode.FileSystemWatcher;
 let justCreated: vscode.Uri | null;
 
-export async function activate(folder: vscode.WorkspaceFolder) {
+export function activate(folder: vscode.WorkspaceFolder) {
   watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(folder, '**/*'));
 
   watcher.onDidCreate((uri) => {
@@ -37,29 +37,38 @@ export async function activate(folder: vscode.WorkspaceFolder) {
 
       if (justCreatedPath.dir === justDeletedPath.dir) {
         //change file name
-        fs.access(justDeletedFsPath + '.meta', (err) => {
+        fs.access(`${justDeletedFsPath}.meta`, (err) => {
           if (!err) {
-            fs.rename(justDeletedFsPath + '.meta', justCreatedFsPath + '.meta', (err) => {
-              if (err) throw err;
+            fs.rename(`${justDeletedFsPath}.meta`, `${justCreatedFsPath}.meta`, (err) => {
+              if (err) {
+                console.error(err);
+                throw err;
+              }
             });
           }
         });
       } else if (justCreatedPath.base === justDeletedPath.base) {
         //change file location
-        fs.access(justDeletedFsPath + '.meta', (err) => {
+        fs.access(`${justDeletedFsPath}.meta`, (err) => {
           if (!err) {
-            fs.rename(justDeletedFsPath + '.meta', justCreatedFsPath + '.meta', (err) => {
-              if (err) throw err;
+            fs.rename(`${justDeletedFsPath}.meta`, `${justCreatedFsPath}.meta`, (err) => {
+              if (err) {
+                console.error(err);
+                throw err;
+              }
             });
           }
         });
       }
     } else {
       //Just normal delete
-      fs.access(uri.fsPath + '.meta', (err) => {
+      fs.access(`${uri.fsPath}.meta`, (err) => {
         if (!err) {
-          fs.unlink(uri.fsPath + '.meta', (err) => {
-            if (err) throw err;
+          fs.unlink(`${uri.fsPath}.meta`, (err) => {
+            if (err) {
+              console.error(err);
+              throw err;
+            }
           });
         }
       });
@@ -67,6 +76,40 @@ export async function activate(folder: vscode.WorkspaceFolder) {
   });
 }
 
-export async function deactivate() {
+export function cleanUpMetaFiles(folders: vscode.WorkspaceFolder[]) {
+  folders.forEach((folder) => {
+    const metaFilePaths = findAllMetaFiles(folder.uri.fsPath);
+    metaFilePaths.forEach((metaPath) => {
+      const reg = /(?<path>.*).meta/;
+      const execRst = reg.exec(metaPath);
+      const filePath = execRst?.groups?.path;
+      if (!filePath || !fs.existsSync(filePath)) {
+        fs.unlink(metaPath, (err) => {
+          if (err) {
+            console.error(err);
+            throw err;
+          }
+        });
+      }
+    });
+  });
+}
+
+function findAllMetaFiles(basePath: string) {
+  const filePaths: string[] = [];
+  const files = fs.readdirSync(basePath);
+  files.forEach((file) => {
+    const filePath = path.join(basePath, file);
+    const stat = fs.statSync(filePath);
+    if (stat.isDirectory()) {
+      filePaths.push(...findAllMetaFiles(filePath));
+    } else if (filePath.endsWith('.meta')) {
+      filePaths.push(filePath);
+    }
+  });
+  return filePaths;
+}
+
+export function deactivate() {
   watcher?.dispose();
 }
